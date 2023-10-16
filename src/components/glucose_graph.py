@@ -1,29 +1,56 @@
 from matplotlib import pyplot as plt
 from matplotlib import dates as md
-plt.style.use("dark_background")
+from matplotlib.ticker import AutoMinorLocator
+from numpy import array
+
+
+# plt.style.use("dark_background")
 
 
 def plot_glucose(df, date, range_lower, range_upper, fig_scale):
+    """
+    Plots glucose line graph for selected day.
+    :param df: pandas dataframe
+    :param date: selected date, datetime object
+    :param range_lower: low glucose threshold
+    :param range_upper: high glucose threshold
+    :param fig_scale: figure scaling factor
+    :return: matplotlib figure
+    """
 
-    # preprocessing
-    data = df.loc[date, "glucose"]
+    # data preprocessing
+    data = df.loc[date.strftime("%F"), "glucose"]
     mask = (data > range_lower) & (data < range_upper)
-
-    # xticks formatter
-    formatter = md.DateFormatter("%H:%M")
-
-    ylim_upper = (data.max() + 1).round()
-    ylim_lower = (data.min() - 1).round()
-
-    fig, ax = plt.subplots(figsize=(5*fig_scale, 2*fig_scale))
 
     in_range = data[mask].resample("5min").max()
     out_of_range = data[~mask].resample("5min").max()
 
-    ax.plot(in_range)
-    ax.plot(out_of_range)
+    # variables
+    fig_shape = 5, 2
+    formatter = md.DateFormatter("%H:%M")  # xticks formatter
+    ylim_upper = (data.max() + 2).round()  # yaxis range
+    ylim_lower = (data.min() - 2).round()
+
+    # figure
+    fig, ax = plt.subplots(figsize=(array(fig_shape) * fig_scale))
+
+    ax.plot(in_range, label="Within")
+    ax.plot(out_of_range, label="Outside")
+    ax.hlines(
+        [range_lower, range_upper], data.index.min(), data.index.max(),
+        linestyles="dashed", colors="grey", alpha=.5, label="Threshold"
+    )
+
+    # axes and legend settings
     ax.xaxis.set_major_formatter(formatter)
-    ax.set(ylim=[ylim_lower, ylim_upper])
-    ax.legend(["Within target", "Outside target"])
+    ax.xaxis.set_minor_locator(AutoMinorLocator())
+    ax.set(
+        title="Continuous blood glucose monitor data",
+        xlabel=f"{date.strftime('%B %d, %Y')}",
+        ylim=[ylim_lower, ylim_upper],
+        ylabel="Blood glucose, $mmol/L$",
+    )
+    ax.legend(title="BG target range")
+    ax.grid(alpha=.2)
 
     return fig

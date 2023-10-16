@@ -5,7 +5,13 @@ from os.path import basename, exists
 from streamlit_dimensions import st_dimensions
 
 
-def fig_scale(n): return np.log10(st_dimensions(key="main")["width"] // 200) * n
+def scale_fig(c=1):
+    """ Returns figure scaling factor
+    based on the size of the browser window.
+    :param c: scaling coefficient
+    :return: scaling factor
+    """
+    return st_dimensions("main")["width"] / (300 * c)
 
 
 def read_json(path):
