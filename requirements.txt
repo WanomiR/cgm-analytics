@@ -1,4 +1,5 @@
 streamlit
+streamlit_dimensions
 pandas
 numpy
 matplotlib
