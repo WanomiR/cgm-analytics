@@ -4,7 +4,7 @@ import sys
 # update system path to access higher order directories
 sys.path.append("../")
 from components.utils import *
-from components.glucose_graph import plot_glucose
+from components.glucose_graph import GlucosePlot
 
 # Page confit
 st.set_page_config(page_title="CGM Daily Graph",
@@ -66,12 +66,13 @@ with col3:
     )
 
 st.subheader(f"Line plot graph")
+
+glucose_plot = GlucosePlot(
+    df, date,
+    target_range_lower,
+    target_range_upper,
+)
 st.pyplot(
-    plot_glucose(
-        df, date,
-        target_range_lower,
-        target_range_upper,
-        scale_fig(1.2)
-    ),
+    glucose_plot.plot(scale_factor=1.2),
     dpi=400, clear_figure=True, use_container_width=True
 )

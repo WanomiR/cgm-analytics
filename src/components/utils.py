@@ -2,16 +2,6 @@ import pandas as pd
 import numpy as np
 import json
 from os.path import basename, exists
-from streamlit_dimensions import st_dimensions
-
-
-def scale_fig(c=1):
-    """ Returns figure scaling factor
-    based on the size of the browser window.
-    :param c: scaling coefficient
-    :return: scaling factor
-    """
-    return st_dimensions("main")["width"] / (300 * c)
 
 
 def read_json(path):
