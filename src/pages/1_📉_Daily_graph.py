@@ -19,8 +19,8 @@ def read_data():
     Read and cash the data.
     :return: pandas dataframe
     """
-    entries = process_entries("./data/entries.json")
-    treatments = process_treatments("./data/treatments.json")
+    entries = process_entries("./mongo_dump/entries.json")
+    treatments = process_treatments("./mongo_dump/treatments.json")
     return treatments.combine_first(entries).resample("5min").max()
 
 
