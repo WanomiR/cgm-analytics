@@ -13,7 +13,7 @@ st.set_page_config(page_title="CGM Daily Graph",
                    )
 
 
-@st.cache_data
+# @st.cache_data
 def read_data():
     """
     Read and cash the data.
@@ -69,5 +69,6 @@ graph = GlucoseGraph(
 )
 st.pyplot(
     graph.plot(scale_factor=1.2),
-    dpi=400, clear_figure=True, use_container_width=True
+    dpi=500, clear_figure=True,
+    use_container_width=True
 )

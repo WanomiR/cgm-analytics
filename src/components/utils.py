@@ -67,14 +67,15 @@ def process_entries(path):
     # convert mg/dL to mmol/L
     df['glucose'] = convert_to_mmol(df['sgv'])
     # filter out calibration records and resample the resulting series
-    df = df.loc[df['type'] == 'sgv', ['glucose']].resample('5min').max()
+    # df = df.loc[df['type'] == 'sgv', ['glucose']].resample('5min').max()
+    df = df.loc[df['type'] == 'sgv', ['glucose']]
     return df
 
 
 def process_treatments(path):
     # variables
-    cols_mapping = {'insulin': 'bolus', 'amount': 'basal', 'eventType': 'event_type'}
-    cols_to_use = ['basal', 'duration', 'bolus', 'rate', 'glucose', 'carbs', 'cal']
+    cols_mapping = {'insulin': 'bolus', 'rate': 'basal', 'eventType': 'event_type'}
+    cols_to_use = ['basal', 'bolus', 'amount', 'glucose', 'carbs', 'cal']
     events_to_keep = ['Temp Basal', 'Correction Bolus', 'Meal Bolus', 'BG Check']
 
     # read the data
@@ -84,14 +85,15 @@ def process_treatments(path):
     df.index.name = 'timestamp'
     # rename data fields and take a subset
     df.rename(cols_mapping, axis=1, inplace=True)
-    # df['cal'] = 1 if df['event_type'] == 'BG Check' else 0
     df['cal'] = np.where(df['event_type'] == 'BG Check', 1, 0)
-    df['basal'] *= df['rate']
     # convert duration to continuous data series
     tmp_basal = df.loc[df['event_type'] == 'Temp Basal', ['basal', 'duration']].copy()
     tmp_basal = build_basal_series(tmp_basal)
     df = df.loc[df['event_type'].isin(events_to_keep), cols_to_use]
-    df = tmp_basal.combine_first(df).resample('5min').max()
+    df = tmp_basal.combine_first(df).resample('1min').max()
+    # combine microbolus and bolus into one variable
+    df["bolus"] = df["bolus"].combine_first(df["amount"])
+    df.drop(columns=["amount"], inplace=True)
     return df
 
 
