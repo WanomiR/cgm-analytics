@@ -91,6 +91,7 @@ def process_treatments(path):
     tmp_basal = build_basal_series(tmp_basal)
     df = df.loc[df['event_type'].isin(events_to_keep), cols_to_use]
     df = tmp_basal.combine_first(df).resample('1min').max()
+    df["basal"].fillna(0, inplace=True)
     # combine microbolus and bolus into one variable
     df["bolus"] = df["bolus"].combine_first(df["amount"])
     df.drop(columns=["amount"], inplace=True)

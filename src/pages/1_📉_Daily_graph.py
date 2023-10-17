@@ -4,7 +4,7 @@ import sys
 # update system path to access higher order directories
 sys.path.append("../")
 from components.utils import *
-from components.GlucoseGraph import GlucoseGraph
+from components.Graph import GlucoseGraph, GlucoseInsulinGraph
 
 # Page confit
 st.set_page_config(page_title="CGM Daily Graph",
@@ -21,7 +21,7 @@ def read_data():
     """
     entries = process_entries("./data/entries.json")
     treatments = process_treatments("./data/treatments.json")
-    return treatments.combine_first(entries)
+    return treatments.combine_first(entries).resample("5min").max()
 
 
 df = read_data()
@@ -62,7 +62,7 @@ with col3:
 
 st.subheader(f"Glucose graph")
 
-graph = GlucoseGraph(
+graph = GlucoseInsulinGraph(
     df, date,
     target_range_lower,
     target_range_upper,
