@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 from matplotlib import pyplot as plt
 from matplotlib import dates as md
 from matplotlib.ticker import AutoMinorLocator
@@ -7,16 +8,21 @@ from streamlit_dimensions import st_dimensions
 
 
 class GlucoseGraph:
-    def __init__(self, df, date, range_lower, range_upper):
+    def __init__(self, df, date, range_lower, range_upper,
+                 show_calibrations, show_carbs):
         self.date = date
         self.df = df.loc[self.date.strftime("%F")]
         self.range_lower = range_lower
         self.range_upper = range_upper
+        self.show_calibrations = show_calibrations
+        self.show_carbs = show_carbs
         self.time_formatter = md.DateFormatter("%H:%M")
 
     @staticmethod
     def scale_fig(scale_factor):
-        return st_dimensions("main")["width"] / (300 * scale_factor)
+        dims = st_dimensions(key="main")
+        time.sleep(.5)
+        return dims["width"] / (300 * scale_factor)
 
     @property
     def bg_data(self):
@@ -48,7 +54,7 @@ class GlucoseGraph:
 
     def annotate_carbs_intakes(self, ax):
         df = self.df.dropna(subset="carbs")
-        ax.scatter(df.index, df.glucose, marker="o", s=log(df.carbs) * 30, c="green", label="Carbs intake")
+        ax.scatter(df.index, df.glucose, marker="o", s=log(df.carbs) * 30, c="green", label="Carbohydrates")
         for i in range(len(df)):
             ax.annotate(
                 f"{int(df.carbs[i])} g",
@@ -66,8 +72,11 @@ class GlucoseGraph:
             linestyles="dashed", colors="grey", alpha=.5, label="Threshold"
         )
 
-        self.annotate_calibrations(ax)
-        self.annotate_carbs_intakes(ax)
+        if self.show_calibrations:
+            self.annotate_calibrations(ax)
+
+        if self.show_carbs:
+            self.annotate_carbs_intakes(ax)
 
         # axes and legend settings
         ax.xaxis.set_major_formatter(self.time_formatter)
@@ -77,17 +86,12 @@ class GlucoseGraph:
             ylim=[(self.bg_data["min"] - 2).round(), (self.bg_data["max"] + 2).round()],
             ylabel="Blood glucose, $mmol/L$",
         )
-        ax.legend(title="BG target range", loc="upper left")
+        ax.legend(title="Glucose target range", loc="upper left")
         ax.grid(alpha=.2)
 
         return fig
 
-
-class GlucoseInsulinGraph(GlucoseGraph):
-    def __init__(self, df, date, range_lower, range_upper):
-        super().__init__(df, date, range_lower, range_upper)
-
-    def plot(self, scale_factor=1, figure_shape=(5, 3)):
+    def plot_with_insulin(self, scale_factor=1, figure_shape=(5, 3)):
         fig, axs = plt.subplots(
             2, 1, sharex=True, gridspec_kw=dict(height_ratios=[2, 1]),
             figsize=(array(figure_shape) * self.scale_fig(scale_factor))
@@ -101,8 +105,11 @@ class GlucoseInsulinGraph(GlucoseGraph):
             linestyles="dashed", colors="grey", alpha=.5, label="Threshold"
         )
 
-        self.annotate_calibrations(axs[0])
-        self.annotate_carbs_intakes(axs[0])
+        if self.show_calibrations:
+            self.annotate_calibrations(axs[0])
+
+        if self.show_carbs:
+            self.annotate_carbs_intakes(axs[0])
 
         # axes and legend settings
         axs[0].xaxis.set_major_formatter(self.time_formatter)

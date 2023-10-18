@@ -1,10 +1,11 @@
 import pandas as pd
 import streamlit as st
+from streamlit_dimensions import st_dimensions
 import sys
 # update system path to access higher order directories
 sys.path.append("../")
 from components.utils import *
-from components.Graph import GlucoseGraph, GlucoseInsulinGraph
+from components.Graph import GlucoseGraph
 
 # Page confit
 st.set_page_config(page_title="CGM Daily Graph",
@@ -19,8 +20,8 @@ def read_data():
     Read and cash the data.
     :return: pandas dataframe
     """
-    entries = process_entries("./mongo_dump/entries.json")
-    treatments = process_treatments("./mongo_dump/treatments.json")
+    entries = process_entries("./data/entries.json")
+    treatments = process_treatments("./data/treatments.json")
     return treatments.combine_first(entries).resample("5min").max()
 
 
@@ -29,9 +30,9 @@ df = read_data()
 st.title("CGM Daily Graph")
 st.divider()
 
-st.subheader("Graph settings")
+st.subheader("Parameters")
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3 = st.columns([1, 2, 2])
 
 with col1:
     date = st.date_input(
@@ -60,15 +61,36 @@ with col3:
         value=12.
     )
 
+
 st.subheader(f"Glucose graph")
 
-graph = GlucoseInsulinGraph(
+col1, col2, col3, _ = st.columns([1, 1, 1, 2])
+
+with col1:
+    show_insulin = st.toggle("Insulin data", value=True)
+
+with col2:
+    show_carbs = st.toggle("Carbohydrates", value=True)
+
+with col3:
+    show_calibrations = st.toggle("Calibrations", value=False)
+
+graph = GlucoseGraph(
     df, date,
     target_range_lower,
     target_range_upper,
+    show_calibrations,
+    show_carbs,
 )
-st.pyplot(
-    graph.plot(scale_factor=1.2),
-    dpi=500, clear_figure=True,
-    use_container_width=True
-)
+
+if show_insulin:
+    plot = graph.plot_with_insulin
+else:
+    plot = graph.plot
+
+with st.spinner("Graph is loading"):
+    st.pyplot(
+        plot(scale_factor=1.2),
+        dpi=500, clear_figure=True,
+        use_container_width=True
+    )
