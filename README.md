@@ -11,7 +11,7 @@ How to run this app on macOS or Linux.
 	$ pip install --upgrade pip
 	$ pip install -r requirements.txt
 	```
-3. Download the data from the most recent [`mongo_dump`](https://drive.google.com/drive/folders/1Lukvv8iPmfk3nX3-KrZ165xKgrmHeFw-?usp=share_link) and saved it under the `/src/data/` directory. It should look like this:
+3. Download the data from the most recent [`mongo_dump`](https://drive.google.com/drive/folders/1Lukvv8iPmfk3nX3-KrZ165xKgrmHeFw-?usp=share_link) and save it under the `/src/data/` directory. It should look like this:
 
 	```
 	src
@@ -25,7 +25,7 @@ How to run this app on macOS or Linux.
 	│   └── treatments.json
 	```
 
-1. Navigate to the `/src` directory and run the main script.
+1. Navigate to the `/src` directory and run the main script `Start.py` with Streamlit.
 	```bash
 	$ cd src
 	$ streamlit run Start.py
