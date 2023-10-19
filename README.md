@@ -11,7 +11,7 @@ How to run this app on macOS or Linux.
 	$ pip install --upgrade pip
 	$ pip install -r requirements.txt
 	```
-3. Downloaded the [`mongo_dump` data](https://drive.google.com/drive/folders/1Lukvv8iPmfk3nX3-KrZ165xKgrmHeFw-?usp=share_link) and saved it under the `/src/data/` directory. It should look like this:
+3. Download the data [`mongo_dump_`](https://drive.google.com/drive/folders/1Lukvv8iPmfk3nX3-KrZ165xKgrmHeFw-?usp=share_link) and saved it under the `/src/data/` directory. It should look like this:
 
 	```
 	src
