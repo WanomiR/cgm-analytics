@@ -88,7 +88,7 @@ if show_insulin:
 else:
     plot = graph.plot
 
-with st.spinner("Graph is loading"):
+with st.spinner("Loading..."):
     st.pyplot(
         plot(scale_factor=1.2),
         dpi=500, clear_figure=True,
