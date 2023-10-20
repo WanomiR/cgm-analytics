@@ -30,3 +30,24 @@ How to run this app on macOS or Linux.
 	$ cd src
 	$ streamlit run Start.py
 	```
+# Data Dictionary
+- `entries.json` [EDA notebook](https://github.com/WanomiR/cgm-analytics/blob/develop/src/notebooks/eda_entries.ipynb)
+	- `_id` — unique record identifier, {object};
+	- `device` — sensor name {object}, categorical[5];
+	- `noise` — sensor noise {integer}, categorical[4];
+	- `sysTime` — {datetime}, matches `dateString`;
+	- `dateString` — {datetime}, matches `sysTime`;
+	- `rssi` — ??? {float}, constant;
+	- `date` — ??? {float}, scientific notation;
+	- __`sgv` — glucose value in $mg/dL$, {float};__
+	- `direction` — {object}, categorical[8] (allegedly predicts glucose change direction, needs to be verified);
+	- `unfiltered` — ??? {float}, values distribution almost the same as `filtered`;
+	- `filtered` — ??? {float}, values distribution almost the same as `unfiltered`;
+	- `type` — event type {object}, categorical[3];
+	- `utcOffset` — time zone offset {float}, constant;
+	- `scale` — ??? {float}, constant, 99% missing;
+	- `slope` — ??? {float}, 99% missing;
+	- `intercept` — ??? {float}, 99% missing;
+	- `mbg` — ??? {float}, 99% missing;
+	- `trend` — ??? {float}, 99% missing;
+	- `trendRate` — ??? {float}, constant, 99% missing;
