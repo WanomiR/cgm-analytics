@@ -105,5 +105,3 @@ def download(url):
         from urllib.request import urlretrieve
         local, _ = urlretrieve(url, filename)
         print('Downloaded ' + local)
-
-
