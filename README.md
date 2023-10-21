@@ -51,7 +51,7 @@ How to run this app on macOS or Linux.
 	- `mbg` — ??? {float}, 99% missing;
 	- `trend` — ??? {float}, 99% missing;
 	- `trendRate` — ??? {float}, constant, 99% missing;
-- `treatments.json` [EDA notebook](#)
+- `treatments.json` [EDA notebook](https://github.com/WanomiR/cgm-analytics/blob/develop/src/notebooks/eda_treatments.ipynb)
 	- `_id` —
 	- `amount` — ??? {float};
 	- `rate` — very similar to `absolute`
